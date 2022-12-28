@@ -1,0 +1,273 @@
+#include <iostream>
+#include <Windows.h>
+#include <iomanip>
+
+using namespace std;
+
+void Matrix_Generator(int Matrix[10][10], int Size) {
+	int *end = &Matrix[Size - 1][Size - 1];
+	for (int* pMatrix = &Matrix[0][0];  pMatrix <= end; pMatrix++) {
+		*pMatrix = rand() % (Size * Size) + 1;
+	}
+}
+
+void Snake_OutPut(int Full_Matrix[10][10], int Snake_Matrix[10][10], int Size, int Space_Y) {
+    HANDLE hStdout;
+    COORD destCoord;
+    hStdout = GetStdHandle(STD_OUTPUT_HANDLE);
+        destCoord.X = 0;
+        destCoord.Y = 0;
+        SetConsoleCursorPosition(hStdout, destCoord);
+		int Column = 0, Step_Right = 0, Space_X = 0, *pFull_Matrix = &Full_Matrix[0][0];
+		
+		for (int i = 0; i < Size; i++) {
+			if (Step_Right % 2 == 0) {
+				for (int i = 0; i < Size; i++) {
+					Snake_Matrix[i][Column] = *(pFull_Matrix);
+					destCoord.X = Column + Space_X;
+					destCoord.Y = i + i + Space_Y;
+					SetConsoleCursorPosition(hStdout, destCoord);
+					Sleep(100);
+					cout << *pFull_Matrix;
+					++pFull_Matrix;
+				}
+				Space_X += 3;
+			}
+			else {
+				for (int i = Size - 1; i >= 0; i--) {
+					Snake_Matrix[i][Column] = *(pFull_Matrix);
+					destCoord.X = Column + Space_X;
+					destCoord.Y = i + i + Space_Y;
+					SetConsoleCursorPosition(hStdout, destCoord);
+					Sleep(100);
+					cout << *pFull_Matrix;
+					++pFull_Matrix;
+				}
+				Space_X += 3;
+			}
+			++Column;
+			++Step_Right;
+		}
+		destCoord.X = 0;
+		destCoord.Y = Space_Y + Size*2 + 2;
+		SetConsoleCursorPosition(hStdout, destCoord);
+}
+
+void Swap_Output(int Matrix[10][10], int Size) {
+	for (int x = 0; x < Size; x++) {
+		for (int y = 0; y < Size; y++) {
+			if (Matrix[x][y] >= 10)
+				cout << Matrix[x][y] << "  ";
+			else
+				cout << Matrix[x][y] << "   ";
+		}
+		cout << "\n\n";
+	}
+	cout << "\n\n";
+}
+
+void Swap_A(int Matrix[10][10], int Size) {
+	cout << "\nSwap A)\n";
+	for (int x = 0; x < Size/2; x++) {
+		for (int y = 0; y < Size / 2; y++) {
+			swap(Matrix[x][y + Size / 2], Matrix[x + Size / 2][y + Size / 2]);
+		}
+	}
+	for (int x = 0; x < Size / 2; x++) {
+		for (int y = 0; y < Size / 2; y++) {
+			swap(Matrix[x][y], Matrix[x][y + Size / 2]);
+		}
+	}
+	for (int x = 0; x < Size / 2; x++) {
+		for (int y = 0; y < Size / 2; y++) {
+			swap(Matrix[x][y], Matrix[x + Size / 2][y]);
+		}
+	}
+	Swap_Output(Matrix, Size);
+}
+
+void Swap_B(int Matrix[10][10], int Size) {
+	cout << "\nSwap B)\n";
+	for (int x = 0; x < Size / 2; x++) {
+		for (int y = 0; y < Size / 2; y++) {
+			swap(Matrix[x][y], Matrix[x + Size / 2][y + Size / 2]);
+			swap(Matrix[x + Size / 2][y], Matrix[x][y + Size / 2]);
+		}
+	}
+	Swap_Output(Matrix, Size);
+}
+
+void Swap_C(int Matrix[10][10], int Size) {
+	cout << "\nSwap C)\n";
+	for (int x = 0; x < Size / 2; x++) {
+		for (int y = 0; y < Size / 2; y++) {
+			swap(Matrix[x][y], Matrix[x + Size / 2][y]);
+			swap(Matrix[x][y + Size / 2], Matrix[x + Size / 2][y + Size / 2]);
+		}
+	}
+	Swap_Output(Matrix, Size);
+}
+
+void Swap_D(int Matrix[10][10], int Size) {
+	cout << "\nSwap D)\n";
+	for (int x = 0; x < Size / 2; x++) {
+		for (int y = 0; y < Size / 2; y++) {
+			swap(Matrix[x][y], Matrix[x][y + Size / 2]);
+			swap(Matrix[x + Size / 2][y], Matrix[x + Size / 2][y + Size / 2]);
+		}
+	}
+	Swap_Output(Matrix, Size);
+}
+
+void Matrix_Bubble_Sort(int Matrix[10][10], int Size) {
+	int  Matrix_6x6[6][6], Matrix_8x8[8][8];
+	if (Size == 6) {
+		for (int i = 0; i < Size; i++) {
+			for (int j = 0; j < Size; j++) {
+				Matrix_6x6[i][j] = Matrix[i][j];
+			}
+		}
+		int* pMatrix_6x6_End = &Matrix_6x6[Size - 1][Size - 1];
+		for (int* pMatrix_6x6_Begin_i = &Matrix_6x6[0][0]; pMatrix_6x6_Begin_i <= pMatrix_6x6_End; pMatrix_6x6_Begin_i++) {
+			for (int *pMatrix_6x6_Begin_j = pMatrix_6x6_Begin_i + 1; pMatrix_6x6_Begin_j <= pMatrix_6x6_End; pMatrix_6x6_Begin_j++) {
+				if (*pMatrix_6x6_Begin_i > *pMatrix_6x6_Begin_j) {
+					swap(*pMatrix_6x6_Begin_i ,*pMatrix_6x6_Begin_j);
+				}
+			}
+		}
+		for (int i = 0; i < Size; i++) {
+			for (int j = 0; j < Size; j++) {
+				Matrix[i][j] = Matrix_6x6[i][j];
+			}
+		}
+	}
+	if (Size == 8) {
+		for (int i = 0; i < Size; i++) {
+			for (int j = 0; j < Size; j++) {
+				Matrix_8x8[i][j] = Matrix[i][j];
+			}
+		}
+		int* pMatrix_8x8_End = &Matrix_8x8[Size - 1][Size - 1];
+		for (int* pMatrix_8x8_Begin_i = &Matrix_8x8[0][0]; pMatrix_8x8_Begin_i <= pMatrix_8x8_End; pMatrix_8x8_Begin_i++) {
+			for (int* pMatrix_8x8_Begin_j = pMatrix_8x8_Begin_i + 1; pMatrix_8x8_Begin_j <= pMatrix_8x8_End; pMatrix_8x8_Begin_j++) {
+				if (*pMatrix_8x8_Begin_i > *pMatrix_8x8_Begin_j) {
+					swap(*pMatrix_8x8_Begin_i, *pMatrix_8x8_Begin_j);
+				}
+			}
+		}
+		for (int i = 0; i < Size; i++) {
+			for (int j = 0; j < Size; j++) {
+				Matrix[i][j] = Matrix_8x8[i][j];
+			}
+		}
+	}
+	else {
+		int* pMatrix_End = &Matrix[Size - 1][Size - 1];
+		for (int* pMatrix_Begin_i = &Matrix[0][0]; pMatrix_Begin_i <= pMatrix_End; pMatrix_Begin_i++) {
+			for (int* pMatrix_Begin_j = pMatrix_Begin_i + 1; pMatrix_Begin_j <= pMatrix_End; pMatrix_Begin_j++) {
+				if (*pMatrix_Begin_i > *pMatrix_Begin_j) {
+					swap(*pMatrix_Begin_i, *pMatrix_Begin_j);
+				}
+			}
+		}
+	}
+	Swap_Output(Matrix, Size);
+}
+
+
+int main() {
+	setlocale(0, "Rus");
+	srand(time(0));
+	cout << "Задание 1\n";
+	int Size, Matrix[10][10], Snake_Matrix[10][10], Space_Y = 5, choose, num;
+
+	while (true) {
+		cout << "Введите размер квадратичной матрицы (6, 8, 10): ";
+		cin >> Size;
+		if (Size != 6 and Size != 8 and Size != 10) {
+			cout << "Ой, промазали( \nПопробуйте еще раз, у вас получиться!!!\n\n\n";
+			Space_Y += 5;
+		}
+		else
+			break;
+	}
+
+	Matrix_Generator(Matrix, Size);
+	Snake_OutPut(Matrix, Snake_Matrix, Size, Space_Y);
+
+	cout << "Задание 2\n Как вы хотите поменять блоки матрицы?\n1) Сдвиг каждого блока, на следующий блок.\n2) Крест на крест.\n3) Верхние блоки с нижними.\n4) Правые блоки с левыми.";
+	while (true) {
+		cout << "\nОтвет: ";
+		cin >> choose;
+		if (choose == 1) {
+			Swap_A(Snake_Matrix, Size);
+			break;
+		}
+		if (choose == 2) {
+			Swap_B(Snake_Matrix, Size);
+			break;
+		}
+		if (choose == 3) {
+			Swap_C(Snake_Matrix, Size);
+			break;
+		}
+		if (choose == 4) {
+			Swap_D(Snake_Matrix, Size);
+			break;
+		}
+		else
+			cout << "Каво?\n";
+	}
+
+	cout << "\n\nЗадание 3\n";
+	Matrix_Bubble_Sort(Matrix, Size);
+
+	cout << "\n\nЗадание 4\nВыберите действие, которое вы хотите сделать с матрицей:\n1) Уменьшить на число\n2) Увеличить на число\n 3) Делить на число\n4) Умножить на число.";
+	while (true) {
+		cout << "\nОтвет: ";
+		cin >> choose;
+		if (choose == 1) {
+			cout << "На что будем уменьшать?\n На: ";
+			cin >> num;
+			for (int i = 0; i < Size; i++) {
+				for (int j = 0; j < Size; j++) {
+					Matrix[i][j] -= num;
+				}
+			}
+			break;
+		}
+		if (choose == 2) {
+			cout << "На что будем увеличивать?\n На: ";
+			cin >> num;
+			for (int i = 0; i < Size; i++) {
+				for (int j = 0; j < Size; j++) {
+					Matrix[i][j] += num;
+				}
+			}
+			break;
+		}
+		if (choose == 3) {
+			cout << "На что будем делить?\n На: ";
+			cin >> num;
+			for (int i = 0; i < Size; i++) {
+				for (int j = 0; j < Size; j++) {
+					Matrix[i][j] /= num;
+				}
+			}
+			break;
+		}
+		if (choose == 4) {
+			cout << "На что будем умножать?\n На: ";
+			cin >> num;
+			for (int i = 0; i < Size; i++) {
+				for (int j = 0; j < Size; j++) {
+					Matrix[i][j] *= num;
+				}
+			}
+			break;
+		}
+		else
+			cout << "Каво?\n";
+	}
+	Swap_Output(Matrix, Size);
+}
